@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  selector:
+    matchLabels:
+      run: my-app
+  template:
+    metadata:
+      labels:
+        run: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: us-docker.pkg.dev/google-samples/containers/gke/whereami:v1.2.22
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-my-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-app
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
